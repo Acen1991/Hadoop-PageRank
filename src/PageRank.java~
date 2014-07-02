@@ -1,0 +1,151 @@
+import java.io.File;
+import java.io.IOException;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.output.*;
+import org.apache.hadoop.mapreduce.lib.input.*;
+import org.apache.commons.io.FileUtils;
+
+
+public class PageRank {
+	
+//--------------------------------------------first job----------------------------------------
+	enum myCounters{ 
+		NUMNODES;
+	}
+
+	static class RemoveDeadendsMap extends Mapper<...> {
+		
+		protected void map(...) {
+			//TODO
+			
+			}
+		}
+	
+
+	static class RemoveDeadendsReduce extends Reducer<...> {
+		
+		protected void reduce(...) {
+			//TODO
+
+			// use the counter 
+			Counter c = context.getCounter(myCounters.NUMNODES);
+		}
+	}
+	
+
+
+	public static void removeDeadendsJob(Configuration conf){	
+		boolean existDeadends = true;
+		String intermediaryDir = conf.get("intermediaryDirPath");
+		String input = conf.get("processedGraphPath");
+		long nNodes = conf.getLong("numNodes", 0);
+		while(existDeadends)
+		{
+			//TODO
+			/* in the input you will have the original graph. At the end, the result should be in the same path(processedGraphPath). The result is the graph without the edges of the deadends. this graph is constructed iterativly, until we 
+			don't have deadends left. intermediaryDir is used for the iteration steps
+			use the counter to check the stop condition
+			in numNodes we should have at the end the remaining number of nodes */
+		}		
+		
+	}
+	
+	
+
+//--------------------------------------------second job----------------------------------------
+
+	
+	// you can change the types defined for the input and output, but make sure to do the changes in all the necessary places
+	
+	static class GraphToMatrixMap extends Mapper<LongWritable, Text, Text, Text> {
+		protected void map(LongWritable key, Text value, Context context){
+			//TODO
+			}
+		}
+	
+	static class GraphToMatrixReduce extends Reducer<Text, Text, Text, Text> {
+		 private MultipleOutputs<Text,Text> mout;
+		 public void setup(Context context) {
+			 mout = new MultipleOutputs<Text,Text>(context);
+			 }
+		 public void cleanup(Context context) throws IOException {
+				 try {
+					mout.close();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			 }
+		 
+		protected void reduce(Text key, Iterable<Text> values, Context context){
+			
+				Text returnValue;
+				Text returnKey;
+			
+				//TODO
+				//this is how you will write the vector
+				mout.write("vector", returnKey, returnValue, "initialPageRank/");
+			
+				//this is how you will write the matrix
+				mout.write("matrix", returnKey , returnValue, "stochasticMatrix/" );  
+			}
+ 	} 
+	
+	public static void GraphToMatrixJob(Configuration conf)
+			throws IOException, ClassNotFoundException, InterruptedException {
+		Job job = Job.getInstance(conf);
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(Text.class);
+
+		job.setMapperClass(GraphToMatrixMap.class);
+		job.setReducerClass(GraphToMatrixReduce.class);
+
+		job.setInputFormatClass(TextInputFormat.class);
+		MultipleOutputs.addNamedOutput(job, "vector", TextOutputFormat.class,
+				 Text.class, Text.class);
+		MultipleOutputs.addNamedOutput(job, "matrix", TextOutputFormat.class,
+				 Text.class, Text.class);
+		FileInputFormat.setInputPaths(job, new Path(conf.get("processedGraphPath")));
+		FileOutputFormat.setOutputPath(job, new Path(conf.get("multipleOutputsPath")));
+		job.waitForCompletion(true);
+	}
+	
+
+	
+//--------------------------------------------iteration ----------------------------------------
+	
+	public static void avoidSpiderTraps(String vectorDir, long nNodes, double beta) throws IOException
+	{
+		//TODO
+	}
+
+
+	public static boolean checkConvergence(String initialDir, String iterationDir, double epsilon)	{
+		
+		//TODO 
+	}
+	
+
+	public static void iterativePageRank(Configuration conf){
+		String initialVector = conf.get("initialPageRankPath");
+		String currentVector = conf.get("currentPageRankPath");
+		
+		/* here is were the final result should be */
+		String finalVector = conf.get("finalPageRankPath"); 
+
+		Double epsilon = conf.getDouble("epsilon", 0.1);
+		Double beta = conf.getDouble("beta", 0.8);
+		
+		long nNodes = conf.getLong("numNodes", 1);
+		
+		//TODO 
+				
+	}
+}
+
+
+
+
+	
