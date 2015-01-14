@@ -1,3 +1,3 @@
 # PageRank
 
-This is an implementation of Google's PageRank algorithm via Hadoop
+I found the chance to implement PageRank with Hadoop as a school project during the first year of my master.
