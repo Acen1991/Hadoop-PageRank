@@ -322,7 +322,6 @@ public class PageRank {
 			while((line_r = bufferedReadR.readLine()) != null){
 				String[] value = line_r.split("\\s+");
 				coeffs.add(Double.valueOf(value[1]));
-				System.out.println("valeur ajoute a coeffs : " + Double.valueOf(value[1]));
 			}
 			bufferedReadR.close();
 		}
@@ -400,9 +399,7 @@ public class PageRank {
 			int l = coeffs.size();
 			for(int i = 0; i<l; i++)
 			{
-				System.out.println("valeur du coeff +"+i+" avant addition : "+ coeffs.get(i) + " avec valeur = " + value);
 				coeffs.set(i,coeffs.get(i)+value);
-				System.out.println("valeur du coeff +"+i+" apres addition : "+ coeffs.get(i) + " avec valeur = " + value);
 			}
 		}
 
@@ -411,9 +408,7 @@ public class PageRank {
 			int l = coeffs.size();
 			for(int i = 0; i<l; i++)
 			{
-				System.out.println("valeur du coeff +"+i+" avant multiplication : "+ coeffs.get(i) + " avec valeur = " + value);
 				coeffs.set(i,coeffs.get(i)*value);
-				System.out.println("valeur du coeff +"+i+" apres multiplication : "+ coeffs.get(i) + " avec valeur = " + value);
 			}
 		}
 
@@ -439,7 +434,6 @@ public class PageRank {
 			double norm = 0.0;
 			for(Double coeff: vect.getCoefficients())
 				norm+=Math.abs(coeff);
-			System.out.println("hello la valeur de la norme est =" + norm);
 			return norm;
 		}
 	}
