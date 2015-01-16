@@ -44,9 +44,8 @@ public class Vector {
 	}
 
 	private File openFile(String directory) {
-		// Ouvrir le repertoire contenant le produit matriciel de H*r_old
-		// ce repertoire contient le fichier _SUCCESS, fichiers caches et
-		// part-r-00000
+		//Open the directory that holds to matricial product H*r_old
+		//this repertory contains the "_SUCCESS" file, some hidden files and the "part-r-00000" file
 		File newDirectory = new File(directory);
 		if (!newDirectory.exists()) {
 			log.warn("Output " + directory + " doesn't exist");
@@ -95,7 +94,6 @@ public class Vector {
 	public void toArray(String vectorPath) throws NumberFormatException,
 			IOException {
 		SortedMap<Integer, Double> treeVector = new TreeMap<Integer, Double>();
-		// TODO
 		BufferedReader vectorBuffer = new BufferedReader(new FileReader(
 				new File(vectorPath)));
 		String line;

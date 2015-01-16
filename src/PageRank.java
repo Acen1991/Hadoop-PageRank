@@ -15,8 +15,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class PageRank {
 
-	// --------------------------------------------first
-	// job----------------------------------------
+	// -------first job -----------
 	public static void removeDeadendsJob(Configuration conf)
 			throws IOException, ClassNotFoundException, InterruptedException {
 		boolean existDeadends = true;
@@ -31,14 +30,7 @@ public class PageRank {
 
 		while (existDeadends) {
 			intermediaryDirPath = new Path(intermediaryDir);
-			/*
-			 * in the input you will have the original graph. At the end, the
-			 * result should be in the same path(processedGraphPath). The result
-			 * is the graph without the edges of the deadends. this graph is
-			 * constructed iterativly, until we don't have deadends left.
-			 * intermediaryDir is used for the iteration steps use the counter
-			 * to check the stop condition
-			 */
+
 			nNodes = conf.getLong("numNodes", 0);
 
 			Job job1 = Job.getInstance(conf);
@@ -66,8 +58,7 @@ public class PageRank {
 		}
 	}
 
-	// --------------------------------------------second
-	// job----------------------------------------
+	// -----------second job----------
 	public static void GraphToMatrixJob(Configuration conf) throws IOException,
 			ClassNotFoundException, InterruptedException {
 		Job job = Job.getInstance(conf);
@@ -89,7 +80,7 @@ public class PageRank {
 		job.waitForCompletion(true);
 	}
 
-	// --------------------------------------------Iteration-------------------------------------/
+	// -------Iteration------------/
 	public static void avoidSpiderTraps(String vectorDir, long nNodes,
 			double beta) throws IOException {
 		Vector vect = new Vector(vectorDir, true);
@@ -123,9 +114,7 @@ public class PageRank {
 		long nNodes = conf.getLong("numNodes", 1);
 
 		PageRank.GraphToMatrixJob(conf);
-		// Definition of the iterative pagerank job, take care of what you'll
-		// write here
-		// variable verifiant la convergence
+
 		boolean convergence = false;
 		boolean converge = false;
 		int nbIterations = 0;
@@ -134,13 +123,14 @@ public class PageRank {
 			int k = (++nbIterations);
 			System.out.println("========= Iteration " + k + " ==========");
 			conf.set("currentPageRankPath", currentVector + "/" + k);
-			// a chaque iteration, on change le directory du currentVector
+			// after each iteration, we change the directory of the current
+			// Vector
 			String currentVectorIterationK = conf.get("currentPageRankPath");
 
-			// resultat stocker dans currentPageRankPath/k
+			// this stores the results into currentPageRankPath/k
 			MatrixVectorMult.multiplicationJob(conf);
 
-			// reecrire le resultat dans currentPageRankPath/k
+			// overwrite the the result into currentPageRankPath/k
 			avoidSpiderTraps(currentVectorIterationK, nNodes, beta);
 			converge = checkConvergence(initialVector, currentVectorIterationK,
 					epsilon);
